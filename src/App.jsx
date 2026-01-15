@@ -10,6 +10,7 @@ import Signup from './pages/Signup'
 import AllPosts from './pages/AllPosts'
 import AddPost from './pages/AddPost'
 import EditPost from './pages/EditPost'
+import Post from './pages/Post'
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -76,6 +77,32 @@ function App() {
                 <Header />
                 <main>
                   <EditPost />
+                </main>
+                <Footer />
+              </div>
+            </div>
+          </AuthLayout>
+        } />
+        <Route path="/all-posts" element={
+          <AuthLayout authentication>
+            <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
+              <div className='w-full block'>
+                <Header />
+                <main>
+                  <AllPosts />
+                </main>
+                <Footer />
+              </div>
+            </div>
+          </AuthLayout>
+        } />
+        <Route path="/post/:slug" element={
+          <AuthLayout authentication>
+            <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
+              <div className='w-full block'>
+                <Header />
+                <main>
+                  <Post />
                 </main>
                 <Footer />
               </div>
