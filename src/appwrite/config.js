@@ -63,7 +63,7 @@ export class Service {
         }
     }
 
-    async getPosts(slug){
+    async getPost(slug){
         try {
             return await this.databases.getDocument(
                 conf.appwrite.databaseId,
