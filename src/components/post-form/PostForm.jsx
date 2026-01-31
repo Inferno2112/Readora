@@ -27,7 +27,9 @@ export default function PostForm({ post }) {
             }
 
             const dbPost = await appwriteService.updatePost(post.$id, {
-                ...data,
+                title: data.title,
+                content: data.content.length > 1000 ? data.content.substring(0, 1000) : data.content,
+                status: data.status,
                 featuredImage: file ? file.$id : undefined,
             });
 
@@ -40,7 +42,14 @@ export default function PostForm({ post }) {
             if (file) {
                 const fileId = file.$id;
                 data.featuredImage = fileId;
-                const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
+                const dbPost = await appwriteService.createPost({
+                    title: data.title,
+                    slug: data.slug,
+                    content: data.content.length > 1000 ? data.content.substring(0, 1000) : data.content,
+                    featuredImage: fileId,
+                    status: data.status,
+                    userId: userData.$id
+                });
 
                 if (dbPost) {
                     navigate(`/post/${dbPost.$id}`);

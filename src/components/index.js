@@ -12,6 +12,7 @@ import RTE from "./RTE";
 import Select from "./Select";
 import Signup from "./Signup";
 import Container from "./container/Container";
+import AppLayout from "./AppLayout";
 
 export {
     AuthLayout,
@@ -27,5 +28,6 @@ export {
     RTE,
     Select,
     Signup,
-    Container
+    Container,
+    AppLayout,
 };

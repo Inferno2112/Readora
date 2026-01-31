@@ -31,18 +31,13 @@ export class Service {
         }
     } 
 
-    async updatePost(slug,{ postId , title,  content, featuredImage , status}){
+    async updatePost(documentId, data){
         try {
             return await this.databases.updateDocument(
                 conf.appwrite.databaseId,
                 conf.appwrite.collectionId,
-                slug,
-                postId,{
-                    title,
-                    content,
-                    featuredImage,
-                    status
-                }
+                documentId,
+                data
             )
         } catch (error) {
             console.log("Appwrite service :: updatePost :: error", error);
@@ -115,7 +110,7 @@ export class Service {
     }
 
     getFilePreview(fileId){
-        return this.bucket.getFilePreview(
+        return this.bucket.getFileView(
             conf.appwrite.bucketId,
             fileId
         );
