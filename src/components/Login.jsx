@@ -31,6 +31,14 @@ function Login() {
       setError(err.message || "Login failed");
     }
   };
+  const googleLogin = async () => {
+    try {
+      await authService.googleLogin();
+    } catch (err) {
+      setError("Google login failed");
+    }
+  };
+
 
   return (
     <div className="w-full bg-zinc-950 text-zinc-100">
@@ -69,7 +77,7 @@ function Login() {
 
           {/* Logo */}
           <div className="mb-8 flex justify-center">
-            <span className="inline-block w-full max-w-[88px] opacity-90">
+            <span className="inline-block w-full pl-30 opacity-90">
               <Logo width="100%" />
             </span>
           </div>
@@ -139,6 +147,29 @@ function Login() {
               </Button>
             </div>
           </form>
+          <div className="mt-6">
+            <button
+              type="button"
+              onClick={googleLogin}
+              className="
+      w-full rounded-full border border-white/10
+      bg-zinc-800 py-2.5
+      text-sm font-medium text-zinc-200
+      hover:bg-zinc-700
+      transition
+      flex items-center justify-center gap-3
+    "
+            >
+              <svg width="18" height="18" viewBox="0 0 48 48">
+                <path fill="#FFC107" d="M43.6 20.4H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.2l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.6z" />
+                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 12 24 12c3.1 0 5.9 1.2 8 3.2l5.7-5.7C34.1 6.1 29.3 4 24 4c-7.7 0-14.4 4.3-17.7 10.7z" />
+                <path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.3l-6.3-5.2C29.3 35.6 26.7 36 24 36c-5.3 0-9.8-3.4-11.4-8.1l-6.5 5C9.4 39.7 16.2 44 24 44z" />
+                <path fill="#1976D2" d="M43.6 20.4H42V20H24v8h11.3c-1 2.6-2.8 4.7-4.9 6.2l6.3 5.2C39.9 36.6 44 30.9 44 24c0-1.3-.1-2.7-.4-3.6z" />
+              </svg>
+              Continue with Google
+            </button>
+          </div>
+
 
           <p className="mt-8 text-center text-xs text-zinc-500">
             Secure login powered by Appwrite
@@ -150,4 +181,3 @@ function Login() {
 }
 
 export default Login;
-    

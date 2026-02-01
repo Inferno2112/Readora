@@ -35,6 +35,14 @@ export class AuthService {
         }
     }
 
+    async googleLogin() {
+        return this.account.createOAuth2Session(
+            "google",
+            window.location.origin,              // success
+            `${window.location.origin}/login`     // failure
+        );
+    }
+
     async getAccount() {
         try {
             return await this.account.get();
