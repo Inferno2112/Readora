@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Header, Footer, AuthLayout,AppLayout } from "./components";
+import { Header, Footer, AuthLayout, AppLayout } from "./components";
 import { login, logout } from "./store/authSlice";
 import authService from "./appwrite/auth";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import AllPosts from "./pages/AllPosts";
+import AllPosts from "./pages/AllPosts"
 import AddPost from "./pages/AddPost";
 import EditPost from "./pages/EditPost";
 import Post from "./pages/Post";
+import MyPosts from "./pages/MyPosts";
+import Home from "./pages/Home";
+
+
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -38,6 +42,17 @@ function App() {
       <Routes>
 
         {/* Public */}
+
+
+        <Route
+          path="/"
+          element={
+            <AuthLayout authentication={false}>
+              <Home />
+            </AuthLayout>
+          }
+        />
+
         <Route
           path="/login"
           element={
@@ -57,6 +72,7 @@ function App() {
         />
 
         {/* Protected */}
+
         <Route
           path="/"
           element={
@@ -67,6 +83,18 @@ function App() {
             </AuthLayout>
           }
         />
+
+        <Route
+          path="/my-posts"
+          element={
+            <AuthLayout authentication>
+              <AppLayout>
+                <MyPosts />
+              </AppLayout>
+            </AuthLayout>
+          }
+        />
+
 
         <Route
           path="/add-post"

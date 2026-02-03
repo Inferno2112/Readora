@@ -1,4 +1,4 @@
-import { Client, ID , Databases , Query , Storage } from "appwrite";
+import { Client, ID, Databases, Query, Storage } from "appwrite";
 import conf from "../conf/conf.js";
 
 export class Service {
@@ -13,25 +13,25 @@ export class Service {
         this.bucket = new Storage(this.client);
     }
 
-    async createPost({ title, slug, content, featuredImage , status, userId}){
+    async createPost({ title, slug, content, featuredImage, status, userId }) {
         try {
             return await this.databases.createDocument(
                 conf.appwrite.databaseId,
                 conf.appwrite.collectionId,
-                slug,{
-                    title,
-                    content,
-                    featuredImage,
-                    status,
-                    userId
-                }
+                slug, {
+                title,
+                content,
+                featuredImage,
+                status,
+                userId: userData.$id,
+            }
             )
         } catch (error) {
             console.log("Appwrite service :: createPost :: error", error);
         }
-    } 
+    }
 
-    async updatePost(documentId, data){
+    async updatePost(documentId, data) {
         try {
             return await this.databases.updateDocument(
                 conf.appwrite.databaseId,
@@ -44,7 +44,7 @@ export class Service {
         }
     }
 
-    async deletePost(slug){
+    async deletePost(slug) {
         try {
             await this.databases.deleteDocument(
                 conf.appwrite.databaseId,
@@ -58,7 +58,7 @@ export class Service {
         }
     }
 
-    async getPost(slug){
+    async getPost(slug) {
         try {
             return await this.databases.getDocument(
                 conf.appwrite.databaseId,
@@ -70,7 +70,7 @@ export class Service {
         }
     }
 
-    async getPosts(quries = [Query.equal('status','active')]){
+    async getPosts(quries = []) {
         try {
             return await this.databases.listDocuments(
                 conf.appwrite.databaseId,
@@ -83,7 +83,7 @@ export class Service {
     }
 
     //file upload service
-    async uploadFile(file){
+    async uploadFile(file) {
         try {
             return await this.bucket.createFile(
                 conf.appwrite.bucketId,
@@ -96,7 +96,7 @@ export class Service {
         }
     }
 
-    async deleteFile(fileId){
+    async deleteFile(fileId) {
         try {
             await this.bucket.deleteFile(
                 conf.appwrite.bucketId,
@@ -109,12 +109,47 @@ export class Service {
         }
     }
 
-    getFilePreview(fileId){
+    getFilePreview(fileId) {
         return this.bucket.getFileView(
             conf.appwrite.bucketId,
             fileId
         );
     }
+
+    getFileView(fileId) {
+        return this.bucket.getFileView(
+            import.meta.env.VITE_APPWRITE_BUCKET_ID,
+            fileId
+        );
+    }
+
+    async getPostsByUser(userId) {
+        try {
+            return await this.databases.listDocuments(
+                conf.appwriteDatabaseId,
+                conf.appwriteCollectionId,
+                [Query.equal("userId", userId)]
+            );
+        } catch (error) {
+            console.error("Appwrite getPostsByUser error:", error);
+            return null;
+        }
+    }
+
+
+    async getMyPosts(userId) {
+        return await this.getPosts([
+            Query.equal("userId", userId),
+            Query.orderDesc("$createdAt"),
+        ]);
+    }
+    async getActivePosts() {
+        return await this.getPosts([
+            Query.equal("status", "active"),
+            Query.orderDesc("$createdAt"),
+        ]);
+    }
+
 }
 
 const service = new Service();

@@ -1,0 +1,33 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  width="64"
+  height="64"
+  role="img"
+  aria-label="Readora favicon"
+>
+  <!-- Background -->
+  <rect
+    x="4"
+    y="4"
+    width="56"
+    height="56"
+    rx="14"
+    fill="#facc15"
+  />
+
+  <!-- Book body -->
+  <rect
+    x="22"
+    y="18"
+    width="20"
+    height="28"
+    rx="3"
+    fill="#09090b"
+  />
+
+  <!-- Book lines -->
+  <rect x="25" y="24" width="14" height="3" fill="#facc15"/>
+  <rect x="25" y="30" width="14" height="3" fill="#facc15"/>
+  <rect x="25" y="36" width="14" height="3" fill="#facc15"/>
+</svg>

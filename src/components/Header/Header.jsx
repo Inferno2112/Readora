@@ -3,6 +3,8 @@ import {Container, Logo, LogoutBtn} from '../index'
 import { Link } from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { Button } from "@/components/ui/button"
+
 
 function Header() {
   const authStatus = useSelector((state) => state.auth.status)
@@ -12,7 +14,7 @@ function Header() {
     {
       name: 'Home',
       slug: "/",
-      active: true
+      active: false
     }, 
     {
       name: "Login",
@@ -25,9 +27,14 @@ function Header() {
       active: !authStatus,
   },
   {
-      name: "All Posts",
+      name: "Home",
       slug: "/all-posts",
       active: authStatus,
+  },
+  {
+      name: "My Posts",
+      slug: "/My-posts",
+      active: authStatus, 
   },
   {
       name: "Add Post",
@@ -54,17 +61,18 @@ function Header() {
           {navItems.map((item) =>
             item.active ? (
               <li key={item.name}>
-                <button
+                <Button
                   onClick={() => navigate(item.slug)}
+                  variant="outline"
                   className="
                     px-5 py-2 rounded-full text-sm font-medium
-                    text-gray-300
+                    text-black-300
                     hover:text-black hover:bg-yellow-400
                     transition-all duration-200
                   "
                 >
                   {item.name}
-                </button>
+                </Button>
               </li>
             ) : null
           )}

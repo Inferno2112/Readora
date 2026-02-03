@@ -1,20 +1,31 @@
 import React from 'react'
 import {useDispatch} from 'react-redux'
+import { useNavigate } from "react-router-dom";
 import authService from '../../appwrite/auth'
 import {logout} from '../../store/authSlice'
+import { Button } from "@/components/ui/button";
+
 
 function LogoutBtn() {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const logoutHandler = () => {
-        authService.logout().then(() => {
-            dispatch(logout())
-        })
+      try {
+      authService.logout();
+      dispatch(logout());
+      navigate("/", { replace: true }); // 🔥 redirect to Hero
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+
     }
   return (
-    <button
-    className='inline-bock px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
+    <Button
+    variant='destructive'
+    className='inline-bock px-6 py-2 duration-200 hover:bg-red-100 hover:text-black rounded-full'
     onClick={logoutHandler}
-    >Logout</button>
+    >Logout</Button>
   )
 }
 
