@@ -2,11 +2,11 @@ import { Header, Footer } from "./index";
 
 function AppLayout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-900">
+    <div className="min-h-screen flex flex-col bg-black">
       <Header />
 
       {/* This pushes footer to bottom */}
-      <main className="flex-1">
+      <main className="flex-1 w-full overflow-x-hidden">
         {children}
       </main>
 
