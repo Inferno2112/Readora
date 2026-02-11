@@ -50,7 +50,7 @@ function Header() {
   }
 
   return (
-  <header className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur-md border-b border-white/10">
+  <header className="sticky top-0 z-50 bg-zinc-900/70 backdrop-blur-xl border-b border-white/10">
     <Container>
       <nav className="flex items-center justify-between py-3 sm:py-4">
         
@@ -72,7 +72,7 @@ function Header() {
                   className="
                     px-4 lg:px-5 py-2 rounded-full text-xs sm:text-sm font-medium
                     text-zinc-300 border-zinc-700
-                    hover:text-white hover:bg-yellow-400 hover:border-yellow-400
+                    hover:text-white hover:bg-blue-500 hover:border-blue-500
                     transition-all duration-200
                   "
                 >
@@ -121,7 +121,7 @@ function Header() {
                     className="
                       w-full justify-start px-4 py-2 rounded-lg text-sm font-medium
                       text-zinc-300 border-zinc-700
-                      hover:text-white hover:bg-yellow-400 hover:border-yellow-400
+                      hover:text-white hover:bg-blue-500 hover:border-blue-500
                       transition-all duration-200
                     "
                   >

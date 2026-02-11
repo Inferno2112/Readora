@@ -13,6 +13,9 @@ import EditPost from "./pages/EditPost";
 import Post from "./pages/Post";
 import MyPosts from "./pages/MyPosts";
 import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Bookmarks from "./pages/Bookmarks";
+import Notifications from "./pages/Notifications";
 
 
 
@@ -100,9 +103,7 @@ function App() {
           path="/add-post"
           element={
             <AuthLayout authentication>
-              <AppLayout>
-                <AddPost />
-              </AppLayout>
+              <AddPost />
             </AuthLayout>
           }
         />
@@ -111,9 +112,7 @@ function App() {
           path="/edit-post/:slug"
           element={
             <AuthLayout authentication>
-              <AppLayout>
-                <EditPost />
-              </AppLayout>
+              <EditPost />
             </AuthLayout>
           }
         />
@@ -122,9 +121,34 @@ function App() {
           path="/all-posts"
           element={
             <AuthLayout authentication>
-              <AppLayout>
-                <AllPosts />
-              </AppLayout>
+              <AllPosts />
+            </AuthLayout>
+          }
+        />
+
+        <Route
+          path="/bookmarks"
+          element={
+            <AuthLayout authentication>
+              <Bookmarks />
+            </AuthLayout>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <AuthLayout authentication>
+              <Notifications />
+            </AuthLayout>
+          }
+        />
+
+        <Route
+          path="/profile/:userId"
+          element={
+            <AuthLayout authentication>
+              <Profile />
             </AuthLayout>
           }
         />
@@ -133,9 +157,7 @@ function App() {
           path="/post/:slug"
           element={
             <AuthLayout authentication>
-              <AppLayout>
-                <Post />
-              </AppLayout>
+              <Post />
             </AuthLayout>
           }
         />

@@ -1,37 +1,43 @@
-import React, { useState } from 'react'
-import authService from '../appwrite/auth'
-import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../store/authSlice'
-import { Logo } from './index.js'
-import { useDispatch, useSelector } from 'react-redux'
-import { useForm } from 'react-hook-form'
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import authService from "../appwrite/auth";
+import { login } from "../store/authSlice";
+import Input from "./Input";
+import LoginScene from "./LoginScene";
+
+const inputClass =
+  "rounded-xl border-zinc-600 bg-white/5 text-white placeholder:text-zinc-500 focus:border-amber-500/50 focus:bg-white/10";
 
 function Signup() {
-  const navigate = useNavigate()
-  const [error, setError] = useState("")
-  const dispatch = useDispatch()
-  const { register, handleSubmit } = useForm()
-  const authStatus = useSelector((state) => state.auth.status);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [error, setError] = useState("");
+  const { register, handleSubmit } = useForm();
+
+  const generateUsername = (fullName) => {
+    const firstName = fullName.trim().split(" ")[0];
+    const cleanFirstName = firstName.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    const randomNumbers = Math.floor(Math.random() * 100)
+      .toString()
+      .padStart(2, "0");
+    return cleanFirstName + randomNumbers;
+  };
+
   const create = async (data) => {
-    setError("")
+    setError("");
     try {
-      const userData = await authService.createAccount(data)
+      const username = generateUsername(data.name);
+      const accountData = { ...data, username };
+      const userData = await authService.createAccount(accountData);
       if (userData) {
-        const userData = await authService.getCurrentUser()
-        if (userData) dispatch(login(userData));
-        navigate("/")
+        const currentUser = await authService.getCurrentUser();
+        if (currentUser) dispatch(login({ userData: currentUser }));
+        navigate("/");
       }
-    } catch (error) {
-      setError(error.message)
-    }
-  }
-  const handlePrimaryCTA = () => {
-    if (authStatus) {
-      navigate("/add-post"); // logged in → write
-    } else {
-      navigate("/login"); // logged out → login
+    } catch (err) {
+      setError(err.message || "Sign up failed");
     }
   };
 
@@ -44,103 +50,94 @@ function Signup() {
   };
 
   return (
-    <>
-      <div class="relative h-full w-full bg-white"><div class="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]">
-
+    <div className="flex min-h-screen w-full bg-black">
+      {/* Left: Readora side scene */}
+      <div className="hidden lg:flex lg:w-1/2 lg:min-h-screen shrink-0">
+        <LoginScene />
       </div>
-        <div className="flex-col  h-screen items-center justify-center bg-black px-4">
-          <nav className="relative mx-auto mb-20 flex w-full max-w-7xl items-center justify-between px-5 py-4">
-            <Link to='/'>
-              <Logo />
-            </Link>
 
-            <button
-              onClick={handlePrimaryCTA}
-              className="hidden rounded-full bg-white px-5 py-2 text-sm font-semibold text-black hover:bg-gray-200 sm:block"
-            >
-              {authStatus ? "Write new post" : "Get started"}
-            </button>
-          </nav>
-          <div className=" z-10 mx-auto w-full max-w-md rounded-2xl border border-white/10 bg-zinc-900 p-8 sm:p-10">
-
-            {/* Logo */}
-            <div className="mb-6 flex justify-center">
-              <span className="inline-block w-full pl-25 opacity-90">
-                <Logo width="100%" />
-              </span>
-            </div>
-
-            {/* Heading */}
-            <h2 className="text-center text-2xl font-semibold text-white">
+      {/* Right: Signup form - same height/width as Login form */}
+      <main className="relative z-10 flex flex-1 min-h-screen flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-10">
+        <div
+          className="w-full max-w-md rounded-2xl p-8 sm:p-10 text-white min-h-[520px] flex flex-col justify-center"
+          style={{
+            background: "rgba(255, 255, 255, 0.06)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          <div className="mb-8 text-center">
+            <h1 className="font-bebas text-3xl sm:text-4xl tracking-tight text-white">
+              Readora
+            </h1>
+            <h2 className="mt-4 text-xl font-semibold text-white">
               Create your account
             </h2>
-            <p className="mt-2 text-center text-sm text-gray-400">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-medium text-yellow-400 hover:underline"
-              >
-                Sign in
-              </Link>
+            <p className="mt-2 text-sm text-zinc-400">
+              Join to start reading and writing
             </p>
+          </div>
 
-            {/* Error */}
-            {error && (
-              <p className="mt-6 text-center text-sm text-red-500">
-                {error}
-              </p>
-            )}
+          <p className="text-center text-sm text-zinc-400">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-medium text-amber-400 hover:text-amber-300 transition-colors"
+            >
+              Sign in
+            </Link>
+          </p>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit(create)} className="mt-8 text-white">
-              <div className="space-y-5">
-                <Input
-                  label="Full name"
-                  placeholder="Enter your full name"
-                  {...register("name", { required: true })}
-                />
+          {error && (
+            <p className="mt-4 text-center text-sm text-red-400">{error}</p>
+          )}
 
-                <Input
-                  label="Email address"
-                  type="email"
-                  placeholder="Enter your email"
-                  {...register("email", {
-                    required: true,
-                    validate: {
-                      matchPatern: (value) =>
-                        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                        "Email address must be valid",
-                    },
-                  })}
-                />
+          <form onSubmit={handleSubmit(create)} className="mt-8 space-y-5">
+            <Input
+              label="Full name"
+              placeholder="Enter your full name"
+              className={inputClass}
+              {...register("name", { required: true })}
+            />
 
-                <Input
-                  label="Password"
-                  type="password"
-                  placeholder="Enter your password"
-                  {...register("password", { required: true })}
-                />
+            <Input
+              label="Email address"
+              type="email"
+              placeholder="Enter your email"
+              className={inputClass}
+              {...register("email", {
+                required: true,
+                validate: {
+                  matchPatern: (value) =>
+                    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                    "Email address must be valid",
+                },
+              })}
+            />
 
-                <Button
-                  type="submit"
-                  className="w-full rounded-full bg-yellow-400 py-2.5 font-semibold text-black hover:bg-yellow-300 transition"
-                >
-                  Create account
-                </Button>
+            <Input
+              label="Password"
+              type="password"
+              placeholder="Enter your password"
+              className={inputClass}
+              {...register("password", { required: true })}
+            />
 
-              </div>
-              <div className="mt-6">
+            <button
+              type="submit"
+              className="mt-2 w-full rounded-full bg-amber-500 py-3 text-sm font-semibold text-black hover:bg-amber-400 transition-colors"
+            >
+              Create account
+            </button>
+          </form>
+
+          <div className="mt-6">
             <button
               type="button"
               onClick={googleLogin}
-              className="
-      w-full rounded-full border border-white/10
-      bg-zinc-800 py-2.5
-      text-sm font-medium text-zinc-200
-      hover:bg-zinc-700
-      transition
-      flex items-center justify-center gap-3
-    "
+              className="flex w-full items-center justify-center gap-3 rounded-full border border-white/20 bg-white/5 py-3 text-sm font-medium text-zinc-200 hover:bg-white/10 transition-colors"
             >
               <svg width="18" height="18" viewBox="0 0 48 48">
                 <path fill="#FFC107" d="M43.6 20.4H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.2l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.6z" />
@@ -151,16 +148,14 @@ function Signup() {
               Continue with Google
             </button>
           </div>
-            </form>
-          </div>
+
+          <p className="mt-8 text-center text-xs text-zinc-500">
+            Secure signup powered by Appwrite
+          </p>
         </div>
-
-      </div>
-
-    </>
-
-
-  )
+      </main>
+    </div>
+  );
 }
 
-export default Signup
+export default Signup;

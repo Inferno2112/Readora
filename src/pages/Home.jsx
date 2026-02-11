@@ -1,5 +1,5 @@
 import React from "react";
-import HeroSection from "@/components/Hero";
+import HeroSection from "@/components/Homepage/Hero";
 import AllPosts from "./AllPosts";
 import { useSelector } from "react-redux";
 

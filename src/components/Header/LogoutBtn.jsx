@@ -10,15 +10,14 @@ function LogoutBtn() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const logoutHandler = () => {
+    const logoutHandler = async () => {
       try {
-      authService.logout();
-      dispatch(logout());
-      navigate("/", { replace: true }); // 🔥 redirect to Hero
-    } catch (error) {
-      console.error("Logout failed", error);
-    }
-
+        await authService.logout();
+        dispatch(logout());
+        navigate("/", { replace: true });
+      } catch (error) {
+        console.error("Logout failed", error);
+      }
     }
   return (
     <Button

@@ -11,10 +11,21 @@ export class AuthService {
         this.account = new Account(this.client);
     }
 
-    async createAccount({ email, password, name }) {
+    async createAccount({ email, password, name, username }) {
         try {
             const userAccount = await this.account.create(ID.unique(), email, password, name);
             if (userAccount) {
+                // Store username in preferences
+                if (username) {
+                    try {
+                        await this.account.updatePrefs({
+                            username: username,
+                            fullName: name
+                        });
+                    } catch (prefsError) {
+                        console.log("Appwrite service :: updatePrefs :: error", prefsError);
+                    }
+                }
                 // call login after successful account creation
                 return this.login({ email, password });
             } else {
@@ -22,6 +33,7 @@ export class AuthService {
             }
         } catch (error) {
             console.log("Appwrite service :: createAccount :: error", error);
+            throw error;
         }
     }
 
@@ -68,6 +80,15 @@ export class AuthService {
             await this.account.deleteSessions();
         } catch (error) {
             console.log("Appwrite service :: logout :: error", error);
+        }
+    }
+
+    async updatePreferences(prefs) {
+        try {
+            return await this.account.updatePrefs(prefs);
+        } catch (error) {
+            console.log("Appwrite service :: updatePreferences :: error", error);
+            throw error;
         }
     }
 }

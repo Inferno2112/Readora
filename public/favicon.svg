@@ -6,14 +6,24 @@
   role="img"
   aria-label="Readora favicon"
 >
-  <!-- Background -->
+  <!-- Background - dark theme to match app -->
   <rect
     x="4"
     y="4"
     width="56"
     height="56"
     rx="14"
-    fill="#facc15"
+    fill="#09090b"
+  />
+  <rect
+    x="4"
+    y="4"
+    width="56"
+    height="56"
+    rx="14"
+    fill="none"
+    stroke="#27272a"
+    stroke-width="1.5"
   />
 
   <!-- Book body -->
@@ -23,11 +33,13 @@
     width="20"
     height="28"
     rx="3"
-    fill="#09090b"
+    fill="#18181b"
+    stroke="#3f3f46"
+    stroke-width="1"
   />
 
-  <!-- Book lines -->
-  <rect x="25" y="24" width="14" height="3" fill="#facc15"/>
-  <rect x="25" y="30" width="14" height="3" fill="#facc15"/>
-  <rect x="25" y="36" width="14" height="3" fill="#facc15"/>
+  <!-- Book lines - accent -->
+  <rect x="25" y="24" width="14" height="2.5" rx="1" fill="#ffffff"/>
+  <rect x="25" y="30" width="14" height="2.5" rx="1" fill="#ffffff"/>
+  <rect x="25" y="36" width="14" height="2.5" rx="1" fill="#ffffff"/>
 </svg>

@@ -13,6 +13,8 @@ import Select from "./Select";
 import Signup from "./Signup";
 import Container from "./container/Container";
 import AppLayout from "./AppLayout";
+import Sidebar from "./Sidebar";
+import RightSidebar from "./RightSidebar";
 
 export {
     AuthLayout,
@@ -30,4 +32,6 @@ export {
     Signup,
     Container,
     AppLayout,
+    Sidebar,
+    RightSidebar,
 };

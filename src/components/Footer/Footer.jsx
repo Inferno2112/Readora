@@ -4,7 +4,7 @@ import Logo from "../Logo";
 
 function Footer() {
   return (
-    <footer className="w-full border-t border-white/10 bg-zinc-900/95 backdrop-blur-md bottom-0">
+    <footer className="w-full border-t border-white/10 bg-zinc-900/70 backdrop-blur-xl bottom-0">
       <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 px-4 sm:px-6 py-6 sm:py-8 lg:py-10">
         
         {/* Logo */}
