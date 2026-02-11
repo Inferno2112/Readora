@@ -15,6 +15,12 @@ export class Service {
 
     async createPost({ title, slug, content, featuredImage, status, userId, userName, userAvatarId }) {
         try {
+            // Appwrite documentId: max 36 chars, a-z A-Z 0-9 . - _
+            const documentId = (slug || "")
+                .replace(/[^a-zA-Z0-9._-]/g, "-")
+                .replace(/^-+|-+$/g, "")
+                .slice(0, 36) || `post-${Date.now().toString(36)}`;
+
             const documentData = {
                 title,
                 content,
@@ -23,7 +29,6 @@ export class Service {
                 userId: userId,
             };
             
-            // Add username and avatarId if provided (these need to be in your Appwrite collection schema)
             if (userName) {
                 documentData.userName = userName;
             }
@@ -34,7 +39,7 @@ export class Service {
             return await this.databases.createDocument(
                 conf.appwrite.databaseId,
                 conf.appwrite.collectionId,
-                slug,
+                documentId,
                 documentData
             )
         } catch (error) {

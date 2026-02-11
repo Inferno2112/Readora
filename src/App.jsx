@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Header, Footer, AuthLayout, AppLayout } from "./components";
+import PostFab from "./components/PostFab";
 import { login, logout } from "./store/authSlice";
 import authService from "./appwrite/auth";
 
@@ -42,6 +43,7 @@ function App() {
 
   return (
     <Router>
+      <PostFab />
       <Routes>
 
         {/* Public */}

@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
@@ -67,7 +68,7 @@ export default function PostForm({ post }) {
             } else {
                 // Create mode
                 if (!data.image || !data.image[0]) {
-                    alert("Please select an image for your post");
+                    toast.warning("Image is required");
                     setIsUploading(false);
                     return;
                 }
@@ -94,9 +95,20 @@ export default function PostForm({ post }) {
             }
         } catch (error) {
             console.error("Error uploading post:", error);
-            alert("Failed to save post. Please try again.");
+            const message = error?.message || "";
+            if (message.includes("documentId") && (message.includes("36 chars") || message.includes("Invalid"))) {
+                toast.error("Title is too long or has invalid characters. Please shorten it and try again.");
+            } else {
+                toast.error(message || "Failed to save post. Please try again.");
+            }
         } finally {
             setIsUploading(false);
+        }
+    };
+
+    const onInvalid = (errors) => {
+        if (errors?.image) {
+            toast.warning("Image is required");
         }
     };
 
@@ -144,7 +156,7 @@ export default function PostForm({ post }) {
     }, [watch, slugTransform, setValue]);
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="space-y-6">
+        <form onSubmit={handleSubmit(submit, onInvalid)} className="space-y-6">
             {/* User Avatar */}
             <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
