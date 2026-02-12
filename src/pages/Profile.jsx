@@ -175,31 +175,28 @@ function Profile() {
       <Sidebar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
 
       <main className="flex-1 lg:w-[600px] lg:ml-[400px] xl:mr-[400px] border-x border-zinc-800 min-h-screen overflow-y-auto scrollbar-hide">
-        {/* Profile Header */}
+        {/* Profile Header: back, avatar (mobile menu), title */}
         <div className="sticky top-0 z-10 bg-black/60 backdrop-blur-xl border-b border-zinc-800/50 px-4 py-3">
-          <div className="flex items-center gap-4">
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 rounded-full hover:bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
-              aria-label="Open menu"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <button
-              onClick={() => navigate(-1)}
-              className="p-2 rounded-full hover:bg-zinc-900 transition-colors"
-            >
+          <div className="flex items-center gap-3">
+            <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-zinc-900 transition-colors shrink-0" aria-label="Back">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <div>
-              <h1 className="text-xl font-bold text-white">{profileUser?.name || 'User'}</h1>
+            <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-1 rounded-full hover:bg-zinc-900 shrink-0" aria-label="Open menu">
+              {currentUser?.prefs?.avatarId ? (
+                <img src={appwriteService.getFilePreview(currentUser.prefs.avatarId)} alt="" className="w-9 h-9 rounded-full object-cover border border-zinc-700" />
+              ) : (
+                <div className="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                  {(currentUser?.name || currentUser?.email || 'U').charAt(0).toUpperCase()}
+                </div>
+              )}
+            </button>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl font-bold text-white truncate">{profileUser?.name || 'User'}</h1>
               <p className="text-sm text-zinc-500">{posts.length} posts</p>
             </div>
+            <div className="w-10 shrink-0 lg:hidden" aria-hidden />
           </div>
         </div>
 

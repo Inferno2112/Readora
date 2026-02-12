@@ -179,8 +179,8 @@ export class Service {
     async getPostsByUser(userId) {
         try {
             return await this.databases.listDocuments(
-                conf.appwriteDatabaseId,
-                conf.appwriteCollectionId,
+                conf.appwrite.databaseId,
+                conf.appwrite.collectionId,
                 [Query.equal("userId", userId)]
             );
         } catch (error) {
@@ -235,10 +235,16 @@ export class Service {
         }
     }
 
-    // Bookmark functionality
+    // Bookmark functionality (requires bookmarks collection: postId, userId)
     async bookmarkPost(postId, userId) {
+        if (!conf.appwrite.bookmarksCollectionId) return false;
         try {
-            // TODO: Create bookmarks collection in Appwrite
+            await this.databases.createDocument(
+                conf.appwrite.databaseId,
+                conf.appwrite.bookmarksCollectionId,
+                ID.unique(),
+                { postId, userId }
+            );
             return true;
         } catch (error) {
             console.log("Appwrite service :: bookmarkPost :: error", error);
@@ -247,8 +253,20 @@ export class Service {
     }
 
     async unbookmarkPost(postId, userId) {
+        if (!conf.appwrite.bookmarksCollectionId) return false;
         try {
-            // TODO: Delete bookmark document
+            const res = await this.databases.listDocuments(
+                conf.appwrite.databaseId,
+                conf.appwrite.bookmarksCollectionId,
+                [Query.equal("userId", userId), Query.equal("postId", postId), Query.limit(1)]
+            );
+            if (res?.documents?.length) {
+                await this.databases.deleteDocument(
+                    conf.appwrite.databaseId,
+                    conf.appwrite.bookmarksCollectionId,
+                    res.documents[0].$id
+                );
+            }
             return true;
         } catch (error) {
             console.log("Appwrite service :: unbookmarkPost :: error", error);
@@ -256,10 +274,37 @@ export class Service {
         }
     }
 
-    async getBookmarkedPosts(userId) {
+    async isBookmarked(postId, userId) {
+        if (!conf.appwrite.bookmarksCollectionId || !userId) return false;
         try {
-            // TODO: Get all bookmarked posts for user
-            return { documents: [] };
+            const res = await this.databases.listDocuments(
+                conf.appwrite.databaseId,
+                conf.appwrite.bookmarksCollectionId,
+                [Query.equal("userId", userId), Query.equal("postId", postId), Query.limit(1)]
+            );
+            return (res?.documents?.length ?? 0) > 0;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async getBookmarkedPosts(userId) {
+        if (!conf.appwrite.bookmarksCollectionId) return { documents: [] };
+        try {
+            const res = await this.databases.listDocuments(
+                conf.appwrite.databaseId,
+                conf.appwrite.bookmarksCollectionId,
+                [Query.equal("userId", userId), Query.orderDesc("$createdAt"), Query.limit(100)]
+            );
+            if (!res?.documents?.length) return { documents: [] };
+            const posts = [];
+            for (const b of res.documents) {
+                try {
+                    const post = await this.getPost(b.postId);
+                    if (post) posts.push(post);
+                } catch (_) {}
+            }
+            return { documents: posts };
         } catch (error) {
             console.log("Appwrite service :: getBookmarkedPosts :: error", error);
             return { documents: [] };
@@ -319,21 +364,32 @@ export class Service {
         }
     }
 
-    // Comments functionality
-    async addComment(postId, userId, content) {
+    // Comments functionality (requires comments collection: postId, userId, userName, userAvatarId?, content)
+    async addComment(postId, userId, content, userName = null, userAvatarId = null) {
+        if (!conf.appwrite.commentsCollectionId) return null;
         try {
-            // TODO: Create comments collection in Appwrite
-            return true;
+            const doc = await this.databases.createDocument(
+                conf.appwrite.databaseId,
+                conf.appwrite.commentsCollectionId,
+                ID.unique(),
+                { postId, userId, content, userName: userName || "", userAvatarId: userAvatarId || "" }
+            );
+            return doc;
         } catch (error) {
             console.log("Appwrite service :: addComment :: error", error);
-            return false;
+            throw error;
         }
     }
 
     async getComments(postId) {
+        if (!conf.appwrite.commentsCollectionId) return { documents: [] };
         try {
-            // TODO: Get all comments for a post
-            return { documents: [] };
+            const res = await this.databases.listDocuments(
+                conf.appwrite.databaseId,
+                conf.appwrite.commentsCollectionId,
+                [Query.equal("postId", postId), Query.orderAsc("$createdAt")]
+            );
+            return { documents: res?.documents ?? [] };
         } catch (error) {
             console.log("Appwrite service :: getComments :: error", error);
             return { documents: [] };

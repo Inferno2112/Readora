@@ -17,6 +17,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Bookmarks from "./pages/Bookmarks";
 import Notifications from "./pages/Notifications";
+import Explore from "./pages/Explore";
 
 
 
@@ -124,6 +125,15 @@ function App() {
           element={
             <AuthLayout authentication>
               <AllPosts />
+            </AuthLayout>
+          }
+        />
+
+        <Route
+          path="/explore"
+          element={
+            <AuthLayout authentication>
+              <Explore />
             </AuthLayout>
           }
         />

@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import appwriteService from "../appwrite/config"
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-function PostCard({ $id, title, featuredImage, $userName, userName, $createdAt, userId, userAvatarId, likes = 0, comments = 0, shares = 0, isLiked = false, isBookmarked = false }) {
+function PostCard({ $id, title, featuredImage, $userName, userName, $createdAt, userId, userAvatarId, likes = 0, comments = 0, shares = 0, isLiked = false, isBookmarked: initialBookmarked = false }) {
   const navigate = useNavigate()
   const userData = useSelector((state) => state.auth.userData)
 
@@ -20,9 +20,17 @@ function PostCard({ $id, title, featuredImage, $userName, userName, $createdAt, 
     (userData && userId === userData.$id ? userData.prefs?.avatarId : null)
   const [liked, setLiked] = useState(isLiked)
   const [likeCount, setLikeCount] = useState(likes || 0)
-  const [bookmarked, setBookmarked] = useState(isBookmarked)
+  const [bookmarked, setBookmarked] = useState(initialBookmarked)
   const [commentCount] = useState(comments || 0)
   const [shareCount] = useState(shares || 0)
+
+  useEffect(() => {
+    if ($id && userData?.$id) {
+      appwriteService.isBookmarked($id, userData.$id).then(setBookmarked);
+    } else {
+      setBookmarked(initialBookmarked);
+    }
+  }, [$id, userData?.$id, initialBookmarked])
 
   // Format date - handles Appwrite timestamp format
   const formatDate = (dateString) => {
@@ -88,8 +96,13 @@ function PostCard({ $id, title, featuredImage, $userName, userName, $createdAt, 
       navigate('/login')
       return
     }
-    // TODO: Implement bookmark API call
-    setBookmarked(!bookmarked)
+    const next = !bookmarked;
+    setBookmarked(next);
+    if (next) {
+      appwriteService.bookmarkPost($id, userData.$id).catch(() => setBookmarked(false));
+    } else {
+      appwriteService.unbookmarkPost($id, userData.$id).catch(() => setBookmarked(true));
+    }
   }
 
   const handlePostClick = (e) => {

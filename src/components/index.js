@@ -15,6 +15,7 @@ import Container from "./container/Container";
 import AppLayout from "./AppLayout";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
+import PageHeader from "./PageHeader";
 
 export {
     AuthLayout,
@@ -34,4 +35,5 @@ export {
     AppLayout,
     Sidebar,
     RightSidebar,
+    PageHeader,
 };
